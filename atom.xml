@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>emmm&#39;s blog</title>
+  
+  <subtitle>这是子标题</subtitle>
+  <link href="https://h4ckf0rfun.github.io/atom.xml" rel="self"/>
+  
+  <link href="https://h4ckf0rfun.github.io/"/>
+  <updated>2022-09-04T13:42:54.557Z</updated>
+  <id>https://h4ckf0rfun.github.io/</id>
+  
+  <author>
+    <name>emmm</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>动态链接时.so文件内部全局变量的处理</title>
+    <link href="https://h4ckf0rfun.github.io/2022/09/04/%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E6%97%B6so%E6%96%87%E4%BB%B6%E5%86%85%E9%83%A8%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F%E7%9A%84%E5%A4%84%E7%90%86/"/>
+    <id>https://h4ckf0rfun.github.io/2022/09/04/%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E6%97%B6so%E6%96%87%E4%BB%B6%E5%86%85%E9%83%A8%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F%E7%9A%84%E5%A4%84%E7%90%86/</id>
+    <published>2022-09-04T13:09:36.000Z</published>
+    <updated>2022-09-04T13:42:54.557Z</updated>
+    
+    <content type="html"><![CDATA[<p>示例代码:</p><p>a.c:</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> var = <span class="number">0x1234</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">test</span><span class="params">()</span>&#123;</span><br><span class="line">var = <span class="number">0x100</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>main.c</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="type">int</span> var;</span><br><span class="line"><span class="type">int</span> a = <span class="number">10087</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">test</span><span class="params">()</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">a = <span class="number">0x1234</span>;</span><br><span class="line">var = <span class="number">12345</span>;</span><br><span class="line">test();</span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>一般情况下如果在main里面引用到了 一个共享对象内部的全局变量，那么在main的bss段就会有一个该变量的副本，并且会将该副本作为主体。那么共享对象内部的代码就会有点特殊了:</p><p>先看一下main.c里面对var操作的汇编代码:</p><p><img src="https://h4ckf0rfun.github.io/2022/09/04/%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E6%97%B6so%E6%96%87%E4%BB%B6%E5%86%85%E9%83%A8%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F%E7%9A%84%E5%A4%84%E7%90%86/Untitled.png" alt="Untitled"></p><p>直接取到main里面.bss段上的var，然后修改它的值。如果共享对象里面的代码也是这样的，那程序不就乱了吗????</p><p>共享对象里面的代码:</p><p><img src="https://h4ckf0rfun.github.io/2022/09/04/%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E6%97%B6so%E6%96%87%E4%BB%B6%E5%86%85%E9%83%A8%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F%E7%9A%84%E5%A4%84%E7%90%86/Untitled%201.png" alt="Untitled"></p><p>通过一个二级指针，拿到了main的.bss段上面的var，并修改它的值</p><p>(可以通过libc里面来leak主程序基址)</p><p>上面这种是一般情况，有没有什么方法能够将共享对象里面的那个var作为本体呢?，编译时加上-fPIC即可</p><p><img src="https://h4ckf0rfun.github.io/2022/09/04/%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E6%97%B6so%E6%96%87%E4%BB%B6%E5%86%85%E9%83%A8%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F%E7%9A%84%E5%A4%84%E7%90%86/Untitled%202.png" alt="Untitled"></p><p>那么现在main里面的代码也必定和之前的不同:</p><p><img src="https://h4ckf0rfun.github.io/2022/09/04/%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E6%97%B6so%E6%96%87%E4%BB%B6%E5%86%85%E9%83%A8%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F%E7%9A%84%E5%A4%84%E7%90%86/Untitled%203.png" alt="Untitled"></p><p>现在main里面的代码变成了二级指针的方式，最后取到了共享对象里面那个var的地址</p><p>再看看共享对象里面的代码:</p><p><img src="https://h4ckf0rfun.github.io/2022/09/04/%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E6%97%B6so%E6%96%87%E4%BB%B6%E5%86%85%E9%83%A8%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F%E7%9A%84%E5%A4%84%E7%90%86/Untitled%204.png" alt="Untitled"></p><p>和之前的没太大区别，只不过现在rax是它自己里面的那个var</p><p>(上述的二级指针操作实际上就是通过GOT间接访问数据)</p><p>(参考: 《程序员的自我修养》)</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;示例代码:&lt;/p&gt;
+&lt;p&gt;a.c:&lt;/p&gt;
+&lt;figure class=&quot;highlight c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;</summary>
+      
+    
+    
+    
+    <category term="CTF" scheme="https://h4ckf0rfun.github.io/categories/CTF/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>我的第一篇blog</title>
+    <link href="https://h4ckf0rfun.github.io/2022/09/04/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87blog/"/>
+    <id>https://h4ckf0rfun.github.io/2022/09/04/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87blog/</id>
+    <published>2022-09-04T11:59:07.000Z</published>
+    <updated>2022-09-04T12:17:10.424Z</updated>
+    
+    <content type="html"><![CDATA[<p>这里随便瞎写一点东西</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;这里随便瞎写一点东西&lt;/p&gt;
+</summary>
+      
+    
+    
+    
+    <category term="category1" scheme="https://h4ckf0rfun.github.io/categories/category1/"/>
+    
+    
+    <category term="tag1" scheme="https://h4ckf0rfun.github.io/tags/tag1/"/>
+    
+    <category term="tag2" scheme="https://h4ckf0rfun.github.io/tags/tag2/"/>
+    
+  </entry>
+  
+</feed>
