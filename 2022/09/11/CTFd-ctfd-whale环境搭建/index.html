@@ -1,0 +1,277 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>CTFd+ctfd-whale环境搭建 | emmm's blog</title><meta name="author" content="emmm"><meta name="copyright" content="emmm"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="CTFd + ctfd-whale环境搭建(参考博客: (109条消息) (更新)从零开始利用docker搭建CTFd动态独立靶机的靶场_Deilty的博客-CSDN博客_ctfd docker，手把手教你如何建立一个支持ctf动态独立靶机的靶场 - 掘金 (juejin.cn) ) 原理:先看原理:  自己又画了一张:  安装1.docker 与 docker-compose 安装: 卸载旧版本">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CTFd+ctfd-whale环境搭建">
+<meta property="og:url" content="https://h4ckf0rfun.github.io/2022/09/11/CTFd-ctfd-whale%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/index.html">
+<meta property="og:site_name" content="emmm&#39;s blog">
+<meta property="og:description" content="CTFd + ctfd-whale环境搭建(参考博客: (109条消息) (更新)从零开始利用docker搭建CTFd动态独立靶机的靶场_Deilty的博客-CSDN博客_ctfd docker，手把手教你如何建立一个支持ctf动态独立靶机的靶场 - 掘金 (juejin.cn) ) 原理:先看原理:  自己又画了一张:  安装1.docker 与 docker-compose 安装: 卸载旧版本">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://h4ckf0rfun.github.io/img/bg.jpg">
+<meta property="article:published_time" content="2022-09-10T16:50:19.000Z">
+<meta property="article:modified_time" content="2022-09-10T16:52:49.694Z">
+<meta property="article:author" content="emmm">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://h4ckf0rfun.github.io/img/bg.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://h4ckf0rfun.github.io/2022/09/11/CTFd-ctfd-whale%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'CTFd+ctfd-whale环境搭建',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-09-11 00:52:49'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="emmm's blog" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/favicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">2</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">5</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/bg.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">emmm's blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">CTFd+ctfd-whale环境搭建</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2022-09-10T16:50:19.000Z" title="Created 2022-09-11 00:50:19">2022-09-11</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2022-09-10T16:52:49.694Z" title="Updated 2022-09-11 00:52:49">2022-09-11</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/CTF/">CTF</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="CTFd+ctfd-whale环境搭建"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="CTFd-ctfd-whale环境搭建"><a href="#CTFd-ctfd-whale环境搭建" class="headerlink" title="CTFd + ctfd-whale环境搭建"></a>CTFd + ctfd-whale环境搭建</h1><p>(参考博客: <a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_42111373/article/details/106398981">(109条消息) (更新)从零开始利用docker搭建CTFd动态独立靶机的靶场_Deilty的博客-CSDN博客_ctfd docker</a>，<a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903990522544135">手把手教你如何建立一个支持ctf动态独立靶机的靶场 - 掘金 (juejin.cn)</a> )</p>
+<h1 id="原理"><a href="#原理" class="headerlink" title="原理:"></a>原理:</h1><p>先看原理:</p>
+<p><img src="https://h4ckf0rfun.github.io/2022/09/11/CTFd-ctfd-whale%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/Untitled.png" alt="Untitled"></p>
+<p>自己又画了一张:</p>
+<p><img src="https://h4ckf0rfun.github.io/2022/09/11/CTFd-ctfd-whale%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/Untitled%201.png" alt="Untitled"></p>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><h2 id="1-docker-与-docker-compose-安装"><a href="#1-docker-与-docker-compose-安装" class="headerlink" title="1.docker 与 docker-compose 安装:"></a>1.docker 与 docker-compose 安装:</h2><ol>
+<li>卸载旧版本</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get remove docker docker-engine docker.io containerd runc</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>更新包索引&amp;&amp;安装Https依赖 (好像没啥用???)</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line"></span><br><span class="line">sudo apt-get install \</span><br><span class="line">    apt-transport-https \</span><br><span class="line">    ca-certificates \</span><br><span class="line">    curl \</span><br><span class="line">    gnupg-agent \</span><br><span class="line">    software-properties-common</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>添加GPG密钥</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -fsSL https://mirrors.ustc.edu.cn/docker-ce/linux/ubuntu/gpg | sudo apt-key add -</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>设置稳定版仓库(失败的话换成http)</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo add-apt-repository \</span><br><span class="line">   <span class="string">&quot;deb [arch=amd64] https://mirrors.ustc.edu.cn/docker-ce/linux/ubuntu/ \</span></span><br><span class="line"><span class="string">  <span class="subst">$(lsb_release -cs)</span> \</span></span><br><span class="line"><span class="string">  stable&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>安装<strong><strong>Docker Engine-Community</strong></strong></li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install docker-ce docker-ce-cli containerd.io   <span class="comment">#安装最新版</span></span><br></pre></td></tr></table></figure>
+
+<p>更换镜像源:</p>
+<ul>
+<li>科大镜像：<strong><a target="_blank" rel="noopener" href="https://docker.mirrors.ustc.edu.cn/">https://docker.mirrors.ustc.edu.cn/</a></strong></li>
+<li>网易：<strong><a target="_blank" rel="noopener" href="https://hub-mirror.c.163.com/">https://hub-mirror.c.163.com/</a>                     (这个速度块一点)</strong></li>
+<li>阿里云：<strong>https:&#x2F;&#x2F;&lt;你的ID&gt;.mirror.aliyuncs.com</strong></li>
+<li>七牛云加速器：<strong><a target="_blank" rel="noopener" href="https://reg-mirror.qiniu.com/">https://reg-mirror.qiniu.com</a></strong></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sudo /etc/docker/daemon.json</span><br><span class="line"></span><br><span class="line"><span class="comment">## 添加内容&#123;&quot;registry-mirrors&quot;:[&quot;https://reg-mirror.qiniu.com/&quot;]&#125;</span></span><br><span class="line"><span class="comment">#重启docker</span></span><br><span class="line">sudo systemctl daemon-reload</span><br><span class="line">sudo systemctl restart docker</span><br></pre></td></tr></table></figure>
+
+<p>查看是否成功:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker info</span><br></pre></td></tr></table></figure>
+
+<p>docker-compose 安装:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install docker-compose</span><br><span class="line">或者</span><br><span class="line">pip install docker-compose</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-ctfd-ctfd-whale安装"><a href="#2-ctfd-ctfd-whale安装" class="headerlink" title="2. ctfd + ctfd-whale安装"></a>2. ctfd + ctfd-whale安装</h2><ol>
+<li>下载文件,注意必须要git reset ,否则会失败</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/CTFd/CTFd.git</span><br><span class="line"><span class="built_in">cd</span> CTFd/</span><br><span class="line">git reset 6c5c63d667a17aec159c8e26ea53dccfbc4d0fa3 --hard <span class="comment">#回滚到当前教程适合的版本</span></span><br><span class="line"><span class="built_in">cd</span> CTFd/plugins <span class="comment">#打开ctfd插件目录</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/glzjin/CTFd-Whale.git ctfd-whale <span class="comment">#确保插件文件夹小写</span></span><br><span class="line"><span class="built_in">cd</span> ctfd-whale</span><br><span class="line">git reset 5b32f457e9f56ee9b2b29495f4b3b118be3c57bd --hard <span class="comment">#回滚到当前教程适合的版本</span></span><br><span class="line"><span class="built_in">cd</span> ../.. <span class="comment">#返回ctfd主目录</span></span><br><span class="line">vim docker-compose.yml</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>修改docker-compose.yml</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">version: <span class="string">&#x27;2.2&#x27;</span></span><br><span class="line"></span><br><span class="line">services:</span><br><span class="line">  ctfd:</span><br><span class="line">    build: .</span><br><span class="line">    user: root</span><br><span class="line">    restart: always</span><br><span class="line">    ports:</span><br><span class="line">      - <span class="string">&quot;8000:8000&quot;</span> <span class="comment">#第一个是访问ctfd的端口，第二个是docker端口映射出去的端口</span></span><br><span class="line">    environment:</span><br><span class="line">      - UPLOAD_FOLDER=/var/uploads</span><br><span class="line">      - DATABASE_URL=mysql+pymysql://root:ctfd@db/ctfd</span><br><span class="line">      - REDIS_URL=redis://cache:6379</span><br><span class="line">      - WORKERS=1</span><br><span class="line">      - LOG_FOLDER=/var/log/CTFd</span><br><span class="line">      - ACCESS_LOG=-</span><br><span class="line">      - ERROR_LOG=-</span><br><span class="line">    volumes:</span><br><span class="line">      - .data/CTFd/logs:/var/log/CTFd</span><br><span class="line">      - .data/CTFd/uploads:/var/uploads</span><br><span class="line">      - .:/opt/CTFd:ro</span><br><span class="line">      - /var/run/docker.sock:/var/run/docker.sock <span class="comment">#添加这句即可，调用docker api需要这个???</span></span><br><span class="line">    depends_on:</span><br><span class="line">      - db</span><br><span class="line">    networks:</span><br><span class="line">        default:</span><br><span class="line">        internal:</span><br><span class="line"></span><br><span class="line">  db:</span><br><span class="line">    image: mariadb:10.4.12 <span class="comment">#这里改成10.4.12，10.4.13会出错</span></span><br><span class="line">    restart: always</span><br><span class="line">    environment:</span><br><span class="line">      - MYSQL_ROOT_PASSWORD=ctfd</span><br><span class="line">      - MYSQL_USER=ctfd</span><br><span class="line">      - MYSQL_PASSWORD=ctfd</span><br><span class="line">      - MYSQL_DATABASE=ctfd</span><br><span class="line">    volumes:</span><br><span class="line">      - .data/mysql:/var/lib/mysql</span><br><span class="line">    networks:</span><br><span class="line">        internal:</span><br><span class="line">    <span class="comment"># This command is required to set important mariadb defaults</span></span><br><span class="line">    <span class="built_in">command</span>: [mysqld, --character-set-server=utf8mb4, --collation-server=utf8mb4_unicode_ci, --wait_timeout=28800, --log-warnings=0]</span><br><span class="line"></span><br><span class="line">  cache:</span><br><span class="line">    image: redis:4</span><br><span class="line">    restart: always</span><br><span class="line">    volumes:</span><br><span class="line">    - .data/redis:/data</span><br><span class="line">    networks:</span><br><span class="line">        internal:</span><br><span class="line"></span><br><span class="line">networks:</span><br><span class="line">    default:</span><br><span class="line">    internal:</span><br><span class="line">        internal: <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>修改dockerfile (这里是把python版本也改了，默认是2.7，但是2.7试了下会失败)</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">FROM python:3.6-alpine</span><br><span class="line">RUN sed -i <span class="string">&#x27;s/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g&#x27;</span> /etc/apk/repositories &amp;&amp;\</span><br><span class="line">    apk update &amp;&amp; \</span><br><span class="line">    apk add python3 python3-dev linux-headers libffi-dev gcc make musl-dev py-pip mysql-client git openssl-dev g++</span><br><span class="line">RUN adduser -D -u 1001 -s /bin/bash ctfd</span><br><span class="line">WORKDIR /opt/CTFd</span><br><span class="line">RUN <span class="built_in">mkdir</span> -p /opt/CTFd /var/log/CTFd /var/uploads</span><br><span class="line">RUN pip3 config <span class="built_in">set</span> global.index-url https://pypi.doubanio.com/simple</span><br><span class="line">RUN pip3 config <span class="built_in">set</span> install.trusted-host pypi.doubanio.com</span><br><span class="line">COPY requirements.txt .</span><br><span class="line">RUN pip install -r requirements.txt -i  https://pypi.doubanio.com/simple</span><br><span class="line">COPY . /opt/CTFd</span><br><span class="line">RUN <span class="keyword">for</span> d <span class="keyword">in</span> CTFd/plugins/*; <span class="keyword">do</span> \</span><br><span class="line">      <span class="keyword">if</span> [ -f <span class="string">&quot;<span class="variable">$d</span>/requirements.txt&quot;</span> ]; <span class="keyword">then</span> \</span><br><span class="line">        pip install -r <span class="variable">$d</span>/requirements.txt -i  https://pypi.doubanio.com/simple; \</span><br><span class="line">      <span class="keyword">fi</span>; \</span><br><span class="line">    <span class="keyword">done</span>;</span><br><span class="line">RUN <span class="built_in">chmod</span> +x /opt/CTFd/docker-entrypoint.sh</span><br><span class="line">RUN <span class="built_in">chown</span> -R 1001:1001 /opt/CTFd</span><br><span class="line">RUN <span class="built_in">chown</span> -R 1001:1001 /var/log/CTFd /var/uploads</span><br><span class="line">USER 1001</span><br><span class="line">EXPOSE 8000</span><br><span class="line">ENTRYPOINT [<span class="string">&quot;/opt/CTFd/docker-entrypoint.sh&quot;</span>]</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>在CTFd目录qiurements.txt添加：banal&#x3D;&#x3D;0.4.2 (这里不知道为什么)</li>
+<li>构建并启动</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker-compose build &amp;&amp; docker-compose up </span><br><span class="line"><span class="comment">##后台启动需要加上-d</span></span><br><span class="line"></span><br><span class="line">docker-compose down <span class="comment">#停止</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="3-创建网络"><a href="#3-创建网络" class="headerlink" title="3. 创建网络"></a>3. 创建网络</h2><ol>
+<li>创建ctfd_frp-containers网络</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker network create ctfd_frp-containers</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>创建frpcadmin网络 (frpc容器与ctfd容器需要一起处于这个网络中，因为ctfd要与frpc通信)</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker network create frpcadmin</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-frp安装"><a href="#4-frp安装" class="headerlink" title="4. frp安装"></a>4. frp安装</h2><p>需要在ubuntu linux 上安装frps转发连接到frpc，frpc继续转发到靶机 (frpc是装在容器里面的并与靶机处于一个网络)</p>
+<p>下载frp</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/fatedier/frp/releases/download/v0.29.0/frp_0.29.0_linux_amd64.tar.gz</span><br><span class="line">tar -zxvf frp_0.29.0_linux_amd64.tar.gz</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>启动frps</li>
+</ol>
+<p>先修改frps.ini</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[common]</span><br><span class="line">bind_port = 7897</span><br><span class="line">bind_addr = 0.0.0.0</span><br><span class="line">token = thisistoken</span><br></pre></td></tr></table></figure>
+
+<p>然后启动(或者弄到systemctl里面):</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./frps -c ./frps.ini</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>创建一个容器并在这个容器里面安装frpc，我们将其称为frpc容器</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker run -it container:frpc         <span class="comment">#这里根据实际情况写, </span></span><br></pre></td></tr></table></figure>
+
+<p>将容器加入到frpcadmin网络和ctfd_frp-containers网络</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo docker network connect  frpcadmin &lt;ID&gt;</span><br><span class="line">sudo docker network connect  ctfd_frp-containers &lt;ID&gt;</span><br></pre></td></tr></table></figure>
+
+<p>在容器内执行命令下载frpc</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/fatedier/frp/releases/download/v0.29.0/frp_0.29.0_linux_amd64.tar.gz</span><br><span class="line">tar -zxvf frp_0.29.0_linux_amd64.tar.gz</span><br></pre></td></tr></table></figure>
+
+<p>查看frpc容器在frpcadmin内的IP地值并记下来</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker network inspect frpcadmin</span><br></pre></td></tr></table></figure>
+
+<p>编辑frpc.ini</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[common]</span><br><span class="line">server_addr = 172.17.0.1 <span class="comment"># 这里填写宿主机ifconfig之后docker0的ip,要能连到frps</span></span><br><span class="line">server_port = 7897</span><br><span class="line">token=thisistoken</span><br><span class="line"></span><br><span class="line">admin_addr = 172.17.0.2   <span class="comment">#这个是监听的ip ,需要填frpc容器在frpcadmin网络内的ip</span></span><br><span class="line">													<span class="comment">#因为ctfd要与这个通信,需要处于一个网络中,这个就填上一步看到的IP</span></span><br><span class="line"></span><br><span class="line">admin_port = 7400         <span class="comment">#这个是监听的端口...</span></span><br><span class="line"><span class="comment">#log_file = ./frps.log</span></span><br></pre></td></tr></table></figure>
+
+<p>启动frpc</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./frpc -c ./frpc.ini</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-启动ctfd"><a href="#5-启动ctfd" class="headerlink" title="5. 启动ctfd"></a>5. 启动ctfd</h2><p>启动docker 容器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker-compose up </span><br></pre></td></tr></table></figure>
+
+<p>将ctfd加入到frpcadmin网络中</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker network connect  frpcadmin &lt;ID&gt;</span><br></pre></td></tr></table></figure>
+
+<p>进入后台开始配置</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://localhost:8000</span><br></pre></td></tr></table></figure>
+
+<h2 id="6-配置ctfd-whale"><a href="#6-配置ctfd-whale" class="headerlink" title="6. 配置ctfd-whale"></a>6. 配置ctfd-whale</h2><p>这里直接引用其他大佬文章内的图片</p>
+<p><img src="https://h4ckf0rfun.github.io/2022/09/11/CTFd-ctfd-whale%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/Untitled%202.png" alt="Untitled"></p>
+<p><img src="https://h4ckf0rfun.github.io/2022/09/11/CTFd-ctfd-whale%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/Untitled%203.png" alt="Untitled"></p>
+<p><img src="https://h4ckf0rfun.github.io/2022/09/11/CTFd-ctfd-whale%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/Untitled%204.png" alt="Untitled"></p>
+<h2 id="7-添加题目"><a href="#7-添加题目" class="headerlink" title="7. 添加题目"></a>7. 添加题目</h2><p><img src="https://h4ckf0rfun.github.io/2022/09/11/CTFd-ctfd-whale%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/Untitled%205.png" alt="Untitled"></p>
+<p><img src="https://h4ckf0rfun.github.io/2022/09/11/CTFd-ctfd-whale%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/Untitled%206.png" alt="Untitled"></p>
+<p><img src="https://h4ckf0rfun.github.io/2022/09/11/CTFd-ctfd-whale%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/Untitled%207.png" alt="Untitled"></p>
+<p>上面的80 是 外部端口映射到靶机的80端口</p>
+<h2 id="8-flag设置"><a href="#8-flag设置" class="headerlink" title="8. flag设置"></a>8. flag设置</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="variable">$FLAG</span> &gt; /home/ctf/flag &amp;&amp; <span class="built_in">export</span> FLAG=not_flag &amp;&amp; <span class="built_in">export</span> FLAG=not_flag</span><br></pre></td></tr></table></figure>
+
+<p>示例Dockerfile</p>
+<figure class="highlight docker"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span>    ubuntu:<span class="number">20.04</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> 	apt-get update \</span></span><br><span class="line"><span class="language-bash">	&amp;&amp;apt-get install -y netcat</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash">     useradd ctf</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash">	start.sh /tmp/start.sh</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash">	main /home/ctf/pwn</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash">	<span class="built_in">chmod</span> 777 /home/ctf \</span></span><br><span class="line"><span class="language-bash">	&amp;&amp; <span class="built_in">chmod</span> +x /tmp/start.sh \</span></span><br><span class="line"><span class="language-bash">	&amp;&amp; <span class="built_in">chmod</span> +x /home/ctf/pwn</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">USER</span> 	ctf</span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /home/ctf</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash">	<span class="built_in">echo</span> <span class="variable">$FLAG</span> &gt; /home/ctf/flag \</span></span><br><span class="line"><span class="language-bash">	&amp;&amp;<span class="built_in">export</span> FLAG=not_flag \</span></span><br><span class="line"><span class="language-bash">	&amp;&amp;FLAG=not_flag	\</span></span><br><span class="line"><span class="language-bash">	&amp;&amp;/tmp/start.sh</span></span><br></pre></td></tr></table></figure>
+
+<p>构建</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker build -t pwn:<span class="built_in">test</span> .</span><br></pre></td></tr></table></figure></article><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/img/bg.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2022/09/09/docker%E5%AD%A6%E4%B9%A0-1/"><img class="next-cover" src="/img/bg.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">docker学习(1)</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/favicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">emmm</div><div class="author-info__description">沉下去</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">2</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">5</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/H4ckF0rFun"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#CTFd-ctfd-whale%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-number">1.</span> <span class="toc-text">CTFd + ctfd-whale环境搭建</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8E%9F%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">原理:</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%89%E8%A3%85"><span class="toc-number">3.</span> <span class="toc-text">安装</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-docker-%E4%B8%8E-docker-compose-%E5%AE%89%E8%A3%85"><span class="toc-number">3.1.</span> <span class="toc-text">1.docker 与 docker-compose 安装:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-ctfd-ctfd-whale%E5%AE%89%E8%A3%85"><span class="toc-number">3.2.</span> <span class="toc-text">2. ctfd + ctfd-whale安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%88%9B%E5%BB%BA%E7%BD%91%E7%BB%9C"><span class="toc-number">3.3.</span> <span class="toc-text">3. 创建网络</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-frp%E5%AE%89%E8%A3%85"><span class="toc-number">3.4.</span> <span class="toc-text">4. frp安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E5%90%AF%E5%8A%A8ctfd"><span class="toc-number">3.5.</span> <span class="toc-text">5. 启动ctfd</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E9%85%8D%E7%BD%AEctfd-whale"><span class="toc-number">3.6.</span> <span class="toc-text">6. 配置ctfd-whale</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E6%B7%BB%E5%8A%A0%E9%A2%98%E7%9B%AE"><span class="toc-number">3.7.</span> <span class="toc-text">7. 添加题目</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-flag%E8%AE%BE%E7%BD%AE"><span class="toc-number">3.8.</span> <span class="toc-text">8. flag设置</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/09/11/CTFd-ctfd-whale%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" title="CTFd+ctfd-whale环境搭建">CTFd+ctfd-whale环境搭建</a><time datetime="2022-09-10T16:50:19.000Z" title="Created 2022-09-11 00:50:19">2022-09-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/09/09/docker%E5%AD%A6%E4%B9%A0-1/" title="docker学习(1)">docker学习(1)</a><time datetime="2022-09-09T14:17:34.000Z" title="Created 2022-09-09 22:17:34">2022-09-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/09/05/DestroyWindow%E5%B7%A5%E4%BD%9C%E6%9C%BA%E5%88%B6/" title="DestroyWindow工作机制">DestroyWindow工作机制</a><time datetime="2022-09-05T02:14:58.000Z" title="Created 2022-09-05 10:14:58">2022-09-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/09/04/qwarmup/" title="qwarmup">qwarmup</a><time datetime="2022-09-04T14:34:47.000Z" title="Created 2022-09-04 22:34:47">2022-09-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/09/04/hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95/" title="hexo博客搭建记录">hexo博客搭建记录</a><time datetime="2022-09-04T14:10:50.000Z" title="Created 2022-09-04 22:10:50">2022-09-04</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/img/bg.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2022 By emmm</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">不要停止学习</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
