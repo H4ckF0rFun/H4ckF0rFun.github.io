@@ -1,3 +1,4 @@
+https://h4ckf0rfun.github.io/2022/09/16/windows%E4%B8%8B%E8%B0%83%E7%94%A8Write-ReadFile%E6%9D%A5%E6%93%8D%E4%BD%9Csocket/
 https://h4ckf0rfun.github.io/2022/09/15/linux%E8%BF%90%E8%A1%8C%E5%85%B6%E4%BB%96%E6%9E%B6%E6%9E%84%E7%9A%84%E7%A8%8B%E5%BA%8F/
 https://h4ckf0rfun.github.io/2022/09/12/%E6%9C%80%E5%A4%A7%E5%A0%86/
 https://h4ckf0rfun.github.io/2022/09/11/CTFd-ctfd-whale%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/

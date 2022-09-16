@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://h4ckf0rfun.github.io/2022/09/16/windows%E4%B8%8B%E8%B0%83%E7%94%A8Write-ReadFile%E6%9D%A5%E6%93%8D%E4%BD%9Csocket/</loc>
+    
+    <lastmod>2022-09-16</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://h4ckf0rfun.github.io/2022/09/15/linux%E8%BF%90%E8%A1%8C%E5%85%B6%E4%BB%96%E6%9E%B6%E6%9E%84%E7%9A%84%E7%A8%8B%E5%BA%8F/</loc>
     
     <lastmod>2022-09-15</lastmod>
@@ -112,7 +121,7 @@
 
   <url>
     <loc>https://h4ckf0rfun.github.io/</loc>
-    <lastmod>2022-09-15</lastmod>
+    <lastmod>2022-09-16</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -120,14 +129,14 @@
   
   <url>
     <loc>https://h4ckf0rfun.github.io/tags/tag1/</loc>
-    <lastmod>2022-09-15</lastmod>
+    <lastmod>2022-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://h4ckf0rfun.github.io/tags/tag2/</loc>
-    <lastmod>2022-09-15</lastmod>
+    <lastmod>2022-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
@@ -136,42 +145,42 @@
   
   <url>
     <loc>https://h4ckf0rfun.github.io/categories/CTF/</loc>
-    <lastmod>2022-09-15</lastmod>
+    <lastmod>2022-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://h4ckf0rfun.github.io/categories/category1/</loc>
-    <lastmod>2022-09-15</lastmod>
+    <lastmod>2022-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://h4ckf0rfun.github.io/categories/%E6%97%A5%E8%AE%B0/</loc>
-    <lastmod>2022-09-15</lastmod>
+    <lastmod>2022-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://h4ckf0rfun.github.io/categories/Win32/</loc>
-    <lastmod>2022-09-15</lastmod>
+    <lastmod>2022-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://h4ckf0rfun.github.io/categories/Docker/</loc>
-    <lastmod>2022-09-15</lastmod>
+    <lastmod>2022-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://h4ckf0rfun.github.io/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</loc>
-    <lastmod>2022-09-15</lastmod>
+    <lastmod>2022-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
