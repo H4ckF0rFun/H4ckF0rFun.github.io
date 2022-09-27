@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://h4ckf0rfun.github.io/2022/09/27/IDA%E4%BF%AE%E5%A4%8Dswitch%E8%AF%AD%E5%8F%A5/</loc>
+    
+    <lastmod>2022-09-27</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://h4ckf0rfun.github.io/2022/09/27/aarch64%E6%A0%88%E7%BB%93%E6%9E%84/</loc>
     
     <lastmod>2022-09-27</lastmod>
@@ -189,6 +198,13 @@
   
   <url>
     <loc>https://h4ckf0rfun.github.io/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</loc>
+    <lastmod>2022-09-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://h4ckf0rfun.github.io/categories/%E9%80%86%E5%90%91/</loc>
     <lastmod>2022-09-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
