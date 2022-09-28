@@ -6,7 +6,7 @@
   <link href="https://h4ckf0rfun.github.io/atom.xml" rel="self"/>
   
   <link href="https://h4ckf0rfun.github.io/"/>
-  <updated>2022-09-27T13:19:22.906Z</updated>
+  <updated>2022-09-28T13:59:35.341Z</updated>
   <id>https://h4ckf0rfun.github.io/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>kmp</title>
+    <link href="https://h4ckf0rfun.github.io/2022/09/28/kmp/"/>
+    <id>https://h4ckf0rfun.github.io/2022/09/28/kmp/</id>
+    <published>2022-09-28T13:57:25.000Z</published>
+    <updated>2022-09-28T13:59:35.341Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="kmp"><a href="#kmp" class="headerlink" title="kmp"></a>kmp</h1><h3 id="关键"><a href="#关键" class="headerlink" title="关键:"></a>关键:</h3><ol><li>求出next数组， (可以根据next数组计算出遇到不匹配时应该向后跳多远，即有公共前后缀的情况，next里面保存了从subString起始位置到当前位置这部分字符串的最长公共前后缀)</li><li>公共前后缀</li><li>充分利用已知</li></ol><h3 id="如何在O-n-内计算出subString-的-next数组"><a href="#如何在O-n-内计算出subString-的-next数组" class="headerlink" title="如何在O(n) 内计算出subString 的 next数组:"></a>如何在O(n) 内计算出subString 的 next数组:</h3><p>直接上代码吧:</p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> _get_next(<span class="type">const</span> <span class="type">char</span>*s)&#123;</span><br><span class="line">size = <span class="built_in">strlen</span>(s);</span><br><span class="line"><span class="type">int</span> now = <span class="number">0</span>;</span><br><span class="line"><span class="type">int</span> it = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">for</span> (it = <span class="number">1</span>; it &lt; size;)&#123;</span><br><span class="line"><span class="keyword">if</span> (s[now] == s[it])&#123;</span><br><span class="line">next[it] = now + <span class="number">1</span>;</span><br><span class="line">now++;</span><br><span class="line">it++;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> (now &gt; <span class="number">0</span>)&#123;</span><br><span class="line">now = next[now - <span class="number">1</span>];</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span>&#123;</span><br><span class="line">next[it] = <span class="number">0</span>;</span><br><span class="line">it++;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>代码中now实际保存的是最长公共前后缀的结束部分 (由于最长公共前后缀前面有一个，后面有一个，这里的now是保存前面的那个,即从0 到 now 的位置这部分 ，是因为从0到n一定会包含这部分)</p><p>上面的代码中实际只有两种情况:</p><ol><li><p>it与now 指向的字符相同的情况, 这时我们可以根据 0: it-1 这部分的最长公共前后缀，求出0 : it这部分的最长公共前后缀. (直接加1即可) 然后it++, now++ (now始终是前面那部分最长公共前后缀的结束位置)</p></li><li><p>it与now 指向的字符不同的情况, 那么接下来就应该直接将now重新置为0吗??? 此时应该缩小公共前后缀的长度  ，只需要找出最长公共前后缀的的最长公共前后缀即可 (假设存在更小的公共前后缀，那么它一定是包含在最长公共前后缀中的) (认真思考缩小公共前后缀的原因)</p></li></ol><p>之后strstr的实现根据next的数组就很容易写出来了:</p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">const</span> <span class="type">char</span>* <span class="title">mystrstr</span><span class="params">(<span class="type">const</span> <span class="type">char</span>*string,<span class="type">const</span>  <span class="type">char</span>*sub)</span></span>&#123;</span><br><span class="line"><span class="type">const</span> <span class="type">char</span>*now = <span class="number">0</span>,*it;</span><br><span class="line"></span><br><span class="line"><span class="comment">//get next array;</span></span><br><span class="line">_get_next(sub);</span><br><span class="line">now = string;</span><br><span class="line">it = now;</span><br><span class="line"><span class="keyword">while</span> (*now)&#123;</span><br><span class="line"><span class="keyword">while</span> (*it == sub[it - now] &amp;&amp; (it - now) &lt; size)</span><br><span class="line">it++;</span><br><span class="line"><span class="keyword">if</span> ((it - now) == size)&#123;</span><br><span class="line"><span class="keyword">return</span> now;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (it == now)&#123;</span><br><span class="line">now++;</span><br><span class="line">it = now;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span>&#123;<span class="comment">//遇到不匹配的,看一下跳几步</span></span><br><span class="line">now += (it - now) - next[it - now - <span class="number">1</span>];</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;kmp&quot;&gt;&lt;a href=&quot;#kmp&quot; class=&quot;headerlink&quot; title=&quot;kmp&quot;&gt;&lt;/a&gt;kmp&lt;/h1&gt;&lt;h3 id=&quot;关键&quot;&gt;&lt;a href=&quot;#关键&quot; class=&quot;headerlink&quot; title=&quot;关键:&quot;&gt;&lt;/a&gt;关键:&lt;/h3&gt;</summary>
+      
+    
+    
+    
+    <category term="algorithm" scheme="https://h4ckf0rfun.github.io/categories/algorithm/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>IDA修复switch语句</title>

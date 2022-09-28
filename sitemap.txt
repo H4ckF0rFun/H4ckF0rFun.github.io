@@ -1,3 +1,4 @@
+https://h4ckf0rfun.github.io/2022/09/28/kmp/
 https://h4ckf0rfun.github.io/2022/09/27/IDA%E4%BF%AE%E5%A4%8Dswitch%E8%AF%AD%E5%8F%A5/
 https://h4ckf0rfun.github.io/2022/09/27/aarch64%E6%A0%88%E7%BB%93%E6%9E%84/
 https://h4ckf0rfun.github.io/2022/09/16/windows%E4%B8%8B%E8%B0%83%E7%94%A8Write-ReadFile%E6%9D%A5%E6%93%8D%E4%BD%9Csocket/
@@ -23,3 +24,4 @@ https://h4ckf0rfun.github.io/categories/Win32/
 https://h4ckf0rfun.github.io/categories/Docker/
 https://h4ckf0rfun.github.io/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/
 https://h4ckf0rfun.github.io/categories/%E9%80%86%E5%90%91/
+https://h4ckf0rfun.github.io/categories/algorithm/
