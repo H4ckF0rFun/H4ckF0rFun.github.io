@@ -6,7 +6,7 @@
   <link href="https://h4ckf0rfun.github.io/atom.xml" rel="self"/>
   
   <link href="https://h4ckf0rfun.github.io/"/>
-  <updated>2022-09-28T13:59:35.341Z</updated>
+  <updated>2022-10-02T15:50:50.688Z</updated>
   <id>https://h4ckf0rfun.github.io/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>2022-10-02</title>
+    <link href="https://h4ckf0rfun.github.io/2022/10/02/2022-10-02/"/>
+    <id>https://h4ckf0rfun.github.io/2022/10/02/2022-10-02/</id>
+    <published>2022-10-02T15:49:04.000Z</published>
+    <updated>2022-10-02T15:50:50.688Z</updated>
+    
+    <content type="html"><![CDATA[<p>如果前进有困难，那就尝试后退几步</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;如果前进有困难，那就尝试后退几步&lt;/p&gt;
+</summary>
+      
+    
+    
+    
+    <category term="日记" scheme="https://h4ckf0rfun.github.io/categories/%E6%97%A5%E8%AE%B0/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>kmp</title>
