@@ -6,7 +6,7 @@
   <link href="https://h4ckf0rfun.github.io/atom.xml" rel="self"/>
   
   <link href="https://h4ckf0rfun.github.io/"/>
-  <updated>2022-10-02T15:50:50.688Z</updated>
+  <updated>2022-10-02T16:11:09.140Z</updated>
   <id>https://h4ckf0rfun.github.io/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>cdecl与stdcall混用</title>
+    <link href="https://h4ckf0rfun.github.io/2022/10/03/cdecl%E4%B8%8Estdcall%E6%B7%B7%E7%94%A8/"/>
+    <id>https://h4ckf0rfun.github.io/2022/10/03/cdecl%E4%B8%8Estdcall%E6%B7%B7%E7%94%A8/</id>
+    <published>2022-10-02T16:01:54.000Z</published>
+    <updated>2022-10-02T16:11:09.140Z</updated>
+    
+    <content type="html"><![CDATA[<p>__cdecl 调用约定是由调用者来清理栈,像printf这些可变参数就是通过 cdecl来实现的<br>stdcall 是由被调用者清理栈空间的,它的参数个数必须是固定的,因为函数结束时esp&#x2F;rsp调整的数量值是固定的</p><p>在使用的时候有的dll内部的函数是cdecl类型的，但是在源码中声明的时候写成了stdcall,这样就导致了函数结束时,并没有清理栈空间,然而大多数情况下程序仍然可以正常运行,因为没有影响局部变量区域,局部变量的操作是通过rbp&#x2F;rbp来进行的。只是会造成栈空间的浪费，函数结束时leave指令可以使rsp&#x2F;esp回到正常的位置。</p><p>反过来,如果dll里面的是stdcall的函数,但是我通过cdecl的方式去调用.这肯定是会出问题的,esp&#x2F;rsp被调整了两次,已经歪的很厉害了</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;__cdecl 调用约定是由调用者来清理栈,像printf这些可变参数就是通过 cdecl来实现的&lt;br&gt;stdcall 是由被调用者清理栈空间的,它的参数个数必须是固定的,因为函数结束时esp&amp;#x2F;rsp调整的数量值是固定的&lt;/p&gt;
+&lt;p&gt;在使用的时候有的dll内部</summary>
+      
+    
+    
+    
+    <category term="C语言" scheme="https://h4ckf0rfun.github.io/categories/C%E8%AF%AD%E8%A8%80/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>2022-10-02</title>
