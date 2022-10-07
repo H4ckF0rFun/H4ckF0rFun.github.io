@@ -6,7 +6,7 @@
   <link href="https://h4ckf0rfun.github.io/atom.xml" rel="self"/>
   
   <link href="https://h4ckf0rfun.github.io/"/>
-  <updated>2022-10-05T16:51:36.850Z</updated>
+  <updated>2022-10-07T11:45:52.713Z</updated>
   <id>https://h4ckf0rfun.github.io/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>c程序运行流程</title>
+    <link href="https://h4ckf0rfun.github.io/2022/10/07/c%E7%A8%8B%E5%BA%8F%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B/"/>
+    <id>https://h4ckf0rfun.github.io/2022/10/07/c%E7%A8%8B%E5%BA%8F%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B/</id>
+    <published>2022-10-07T11:44:16.000Z</published>
+    <updated>2022-10-07T11:45:52.713Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="https://h4ckf0rfun.github.io/2022/10/07/c%E7%A8%8B%E5%BA%8F%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B/%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B.png" alt="Untitled"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;&lt;img src=&quot;https://h4ckf0rfun.github.io/2022/10/07/c%E7%A8%8B%E5%BA%8F%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B/%E8%BF%90%E8%A1%8C%E6%B5%81%E7%</summary>
+      
+    
+    
+    
+    <category term="C语言" scheme="https://h4ckf0rfun.github.io/categories/C%E8%AF%AD%E8%A8%80/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>windows 异常(1) - VEH</title>
