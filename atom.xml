@@ -6,7 +6,7 @@
   <link href="https://h4ckf0rfun.github.io/atom.xml" rel="self"/>
   
   <link href="https://h4ckf0rfun.github.io/"/>
-  <updated>2022-10-07T11:45:52.713Z</updated>
+  <updated>2022-10-07T15:36:48.632Z</updated>
   <id>https://h4ckf0rfun.github.io/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>windows 异常(0) - 总览</title>
+    <link href="https://h4ckf0rfun.github.io/2022/10/07/windows%E5%BC%82%E5%B8%B8-0/"/>
+    <id>https://h4ckf0rfun.github.io/2022/10/07/windows%E5%BC%82%E5%B8%B8-0/</id>
+    <published>2022-10-07T15:35:22.000Z</published>
+    <updated>2022-10-07T15:36:48.632Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="https://h4ckf0rfun.github.io/2022/10/07/windows%E5%BC%82%E5%B8%B8-0/%25E6%2597%25A0%25E6%25A0%2587%25E9%25A2%2598.png" alt="无标题.png"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;&lt;img src=&quot;https://h4ckf0rfun.github.io/2022/10/07/windows%E5%BC%82%E5%B8%B8-0/%25E6%2597%25A0%25E6%25A0%2587%25E9%25A2%2598.png&quot; alt=&quot;无标题</summary>
+      
+    
+    
+    
+    <category term="逆向" scheme="https://h4ckf0rfun.github.io/categories/%E9%80%86%E5%90%91/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>c程序运行流程</title>
