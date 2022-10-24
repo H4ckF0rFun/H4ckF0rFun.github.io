@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://h4ckf0rfun.github.io/2022/10/24/DAS10%E6%9C%88%E6%80%BB%E7%BB%93/</loc>
+    <loc>https://h4ckf0rfun.github.io/2022/10/20/pwnable-tw-calc/</loc>
     
     <lastmod>2022-10-24</lastmod>
     
@@ -11,9 +11,9 @@
   </url>
   
   <url>
-    <loc>https://h4ckf0rfun.github.io/2022/10/20/pwnable-tw-calc/</loc>
+    <loc>https://h4ckf0rfun.github.io/2022/10/24/DAS10%E6%9C%88%E6%80%BB%E7%BB%93/</loc>
     
-    <lastmod>2022-10-20</lastmod>
+    <lastmod>2022-10-24</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
