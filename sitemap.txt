@@ -1,3 +1,4 @@
+https://h4ckf0rfun.github.io/2022/11/15/seccomp-filter/
 https://h4ckf0rfun.github.io/2022/10/20/pwnable-tw-calc/
 https://h4ckf0rfun.github.io/2022/10/24/DAS10%E6%9C%88%E6%80%BB%E7%BB%93/
 https://h4ckf0rfun.github.io/2022/10/13/%E4%BB%BB%E6%84%8F%E9%80%92%E5%BD%92%E5%86%99%E6%B3%95%E8%BD%AC%E8%BF%AD%E4%BB%A3%E5%86%99%E6%B3%952/
@@ -41,3 +42,4 @@ https://h4ckf0rfun.github.io/categories/%E9%80%86%E5%90%91/
 https://h4ckf0rfun.github.io/categories/algorithm/
 https://h4ckf0rfun.github.io/categories/C%E8%AF%AD%E8%A8%80/
 https://h4ckf0rfun.github.io/categories/Pwn/
+https://h4ckf0rfun.github.io/categories/linux/
