@@ -6,7 +6,7 @@
   <link href="https://h4ckf0rfun.github.io/atom.xml" rel="self"/>
   
   <link href="https://h4ckf0rfun.github.io/"/>
-  <updated>2022-11-15T15:52:19.008Z</updated>
+  <updated>2022-11-17T17:16:05.630Z</updated>
   <id>https://h4ckf0rfun.github.io/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>最小生成树</title>
+    <link href="https://h4ckf0rfun.github.io/2022/11/18/%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91/"/>
+    <id>https://h4ckf0rfun.github.io/2022/11/18/%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91/</id>
+    <published>2022-11-17T17:14:57.000Z</published>
+    <updated>2022-11-17T17:16:05.630Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="最小生成树"><a href="#最小生成树" class="headerlink" title="最小生成树"></a>最小生成树</h1><h1 id="概念"><a href="#概念" class="headerlink" title="概念:"></a>概念:</h1><p>树是一类特殊的无向图。树中不能有回路。树必须是连同图。n个点有n-1条边。</p><p>生成树:：图中包含的一颗树。要求包含所有的节点，保留一部分边。生成树并不唯一。</p><p>最小生成树：所有生成树中所有边的权重和最小的生成树。</p><h1 id="寻找最小生成树"><a href="#寻找最小生成树" class="headerlink" title="寻找最小生成树:"></a>寻找最小生成树:</h1><h2 id="1-Prim‘s-Algorithm"><a href="#1-Prim‘s-Algorithm" class="headerlink" title="1.Prim‘s Algorithm"></a>1.Prim‘s Algorithm</h2><p>算法流程:</p><ol><li>初始时，任选一个节点作为一棵树 T</li><li>寻找图中 与 T相连的节点，选取这些节点中与T之间权值最小的那个节点加入到T中</li><li>重复步骤2，直到T包含图中所有的节点。</li></ol><h2 id="2-Kruskal‘s-Algorithm"><a href="#2-Kruskal‘s-Algorithm" class="headerlink" title="2.Kruskal‘s Algorithm"></a>2.Kruskal‘s Algorithm</h2><p>算法流程:</p><ol><li>将所有边按权值从小到大排序。</li><li>从排序号的边中选出最小的一个。若该边的两个端点已经连同，忽略。否则将这条边作为最小生成树的一条边。</li><li>重复步骤2，直到所有的节点都属于同一棵树。</li></ol>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;最小生成树&quot;&gt;&lt;a href=&quot;#最小生成树&quot; class=&quot;headerlink&quot; title=&quot;最小生成树&quot;&gt;&lt;/a&gt;最小生成树&lt;/h1&gt;&lt;h1 id=&quot;概念&quot;&gt;&lt;a href=&quot;#概念&quot; class=&quot;headerlink&quot; title=&quot;概念:&quot;&gt;&lt;/a&gt;</summary>
+      
+    
+    
+    
+    <category term="algorithm" scheme="https://h4ckf0rfun.github.io/categories/algorithm/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>seccomp-filter</title>
@@ -433,28 +455,6 @@
       
     <summary type="html">&lt;p&gt;今天比赛的时候发现了个有趣的东西:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;https://h4ckf0rfun.github.io/2022/09/16/windows%E4%B8%8B%E8%B0%83%E7%94%A8Write-ReadFile%E6%9D%A5%E6%9</summary>
-      
-    
-    
-    
-    <category term="日记" scheme="https://h4ckf0rfun.github.io/categories/%E6%97%A5%E8%AE%B0/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>linux运行其他架构的程序</title>
-    <link href="https://h4ckf0rfun.github.io/2022/09/15/linux%E8%BF%90%E8%A1%8C%E5%85%B6%E4%BB%96%E6%9E%B6%E6%9E%84%E7%9A%84%E7%A8%8B%E5%BA%8F/"/>
-    <id>https://h4ckf0rfun.github.io/2022/09/15/linux%E8%BF%90%E8%A1%8C%E5%85%B6%E4%BB%96%E6%9E%B6%E6%9E%84%E7%9A%84%E7%A8%8B%E5%BA%8F/</id>
-    <published>2022-09-15T13:38:44.000Z</published>
-    <updated>2022-09-15T13:39:19.388Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Untitled"><a href="#Untitled" class="headerlink" title="Untitled"></a>Untitled</h1><h1 id="aarch64-运行环境"><a href="#aarch64-运行环境" class="headerlink" title="aarch64 运行环境"></a>aarch64 运行环境</h1><ol><li>安装qemu-user</li></ol><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install qemu-user</span><br></pre></td></tr></table></figure><ol start="2"><li>安装gcc (生成aarch64架构的版本)</li></ol><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install gcc-aarch64-linux-gnu</span><br></pre></td></tr></table></figure><h1 id="mips-运行环境"><a href="#mips-运行环境" class="headerlink" title="mips 运行环境"></a>mips 运行环境</h1><ol><li>安装qemu-user</li></ol><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install qemu-user</span><br></pre></td></tr></table></figure><ol start="2"><li>安装gcc</li></ol><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install gcc-mips-linux-<span class="built_in">gnu</span>    (大端)</span><br><span class="line">sudo apt install gcc-mipsel-linux-<span class="built_in">gnu</span>  (小端)</span><br></pre></td></tr></table></figure><p>gcc安装后头文件与.so文件所在的目录:</p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/xxxx-linux-gnu/</span><br></pre></td></tr></table></figure>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h1 id=&quot;Untitled&quot;&gt;&lt;a href=&quot;#Untitled&quot; class=&quot;headerlink&quot; title=&quot;Untitled&quot;&gt;&lt;/a&gt;Untitled&lt;/h1&gt;&lt;h1 id=&quot;aarch64-运行环境&quot;&gt;&lt;a href=&quot;#aarch64-运行环境&quot; cla</summary>
       
     
     
