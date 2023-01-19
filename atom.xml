@@ -6,7 +6,7 @@
   <link href="https://h4ckf0rfun.github.io/atom.xml" rel="self"/>
   
   <link href="https://h4ckf0rfun.github.io/"/>
-  <updated>2023-01-05T07:03:16.263Z</updated>
+  <updated>2023-01-19T16:01:02.862Z</updated>
   <id>https://h4ckf0rfun.github.io/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>如何使用ReadFile和WriteFile对socket进行操作</title>
+    <link href="https://h4ckf0rfun.github.io/2023/01/20/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8ReadFile%E5%92%8CWriteFile%E5%AF%B9socket%E8%BF%9B%E8%A1%8C%E6%93%8D%E4%BD%9C/"/>
+    <id>https://h4ckf0rfun.github.io/2023/01/20/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8ReadFile%E5%92%8CWriteFile%E5%AF%B9socket%E8%BF%9B%E8%A1%8C%E6%93%8D%E4%BD%9C/</id>
+    <published>2023-01-19T16:00:07.000Z</published>
+    <updated>2023-01-19T16:01:02.862Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="如何使用ReadFile和WriteFile对socket进行操作"><a href="#如何使用ReadFile和WriteFile对socket进行操作" class="headerlink" title="如何使用ReadFile和WriteFile对socket进行操作?"></a>如何使用ReadFile和WriteFile对socket进行操作?</h1><p>在linux下面，一切皆文件，所以wrtie和read是可以对socket 进行读写的.</p><p>在windows下面实际上也是可以的.看看文档里面对ReadFile第一个参数的描述:</p><p><img src="https://h4ckf0rfun.github.io/2023/01/20/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8ReadFile%E5%92%8CWriteFile%E5%AF%B9socket%E8%BF%9B%E8%A1%8C%E6%93%8D%E4%BD%9C/Untitled.png" alt="Untitled"></p><p>里面说hFile可以是一个socket.</p><p>但是需要注意OVERLAPPED 这个东西</p><p>socket函数创建的socket默认是支持overlapped的，这样的话在调用ReadFile的时候，最后一个参数是不能忽略的.</p><p><img src="https://h4ckf0rfun.github.io/2023/01/20/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8ReadFile%E5%92%8CWriteFile%E5%AF%B9socket%E8%BF%9B%E8%A1%8C%E6%93%8D%E4%BD%9C/Untitled%201.png" alt="Untitled"></p><p><img src="https://h4ckf0rfun.github.io/2023/01/20/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8ReadFile%E5%92%8CWriteFile%E5%AF%B9socket%E8%BF%9B%E8%A1%8C%E6%93%8D%E4%BD%9C/Untitled%202.png" alt="Untitled"></p><p>如果忽略的话会出现错误.</p><p>解决这个问题的办法有两个:</p><ol><li>在ReadFile后面加上Overlapped操作，这样每次读写的时候都是异步的。</li><li>直接调用WSASocket取消OVERLAPPED属性 (socket内部是调用的WSASocket)，这样ReadFile和WriteFile最后一个参数是可以直接忽略的</li></ol><p>如何把一个socket绑定到一个FILE结构体上?</p><p>在linux下面可以直接调用fdopen来创建一个FILE结构体，在windows下面虽然也有fdopen，但是还是有点区别.</p><p>需要先把 socket绑定到一个fd，然后再把这个fd 绑定到FILE结构体</p><p>但是最后试了下不行……，看来仅仅是支持ReadFile和WriteFile这两个操作,seek之类的操作就会导致失败</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;如何使用ReadFile和WriteFile对socket进行操作&quot;&gt;&lt;a href=&quot;#如何使用ReadFile和WriteFile对socket进行操作&quot; class=&quot;headerlink&quot; title=&quot;如何使用ReadFile和WriteFile对soc</summary>
+      
+    
+    
+    
+    <category term="win32" scheme="https://h4ckf0rfun.github.io/categories/win32/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>DLL劫持</title>
@@ -439,29 +461,6 @@
     
     
     <category term="C语言" scheme="https://h4ckf0rfun.github.io/categories/C%E8%AF%AD%E8%A8%80/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>2022-10-02</title>
-    <link href="https://h4ckf0rfun.github.io/2022/10/02/2022-10-02/"/>
-    <id>https://h4ckf0rfun.github.io/2022/10/02/2022-10-02/</id>
-    <published>2022-10-02T15:49:04.000Z</published>
-    <updated>2022-10-02T15:50:50.688Z</updated>
-    
-    <content type="html"><![CDATA[<p>如果前进有困难，那就尝试后退几步</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;如果前进有困难，那就尝试后退几步&lt;/p&gt;
-</summary>
-      
-    
-    
-    
-    <category term="日记" scheme="https://h4ckf0rfun.github.io/categories/%E6%97%A5%E8%AE%B0/"/>
     
     
   </entry>
