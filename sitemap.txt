@@ -1,3 +1,5 @@
+https://h4ckf0rfun.github.io/2023/02/05/Rabin%E5%8A%A0%E5%AF%86/
+https://h4ckf0rfun.github.io/2023/02/05/%E6%AC%A7%E6%8B%89%E5%87%BD%E6%95%B0/
 https://h4ckf0rfun.github.io/2023/01/20/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8ReadFile%E5%92%8CWriteFile%E5%AF%B9socket%E8%BF%9B%E8%A1%8C%E6%93%8D%E4%BD%9C/
 https://h4ckf0rfun.github.io/2023/01/05/DLL%E5%8A%AB%E6%8C%81/
 https://h4ckf0rfun.github.io/2023/01/05/%E7%88%B6%E8%BF%9B%E7%A8%8B%E6%AC%BA%E9%AA%97/
@@ -50,3 +52,4 @@ https://h4ckf0rfun.github.io/categories/C%E8%AF%AD%E8%A8%80/
 https://h4ckf0rfun.github.io/categories/Pwn/
 https://h4ckf0rfun.github.io/categories/linux/
 https://h4ckf0rfun.github.io/categories/%E5%85%8D%E6%9D%80%E6%8A%80%E6%9C%AF/
+https://h4ckf0rfun.github.io/categories/%E6%95%B0%E5%AD%A6/
