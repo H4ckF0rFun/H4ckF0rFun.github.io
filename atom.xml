@@ -6,7 +6,7 @@
   <link href="https://h4ckf0rfun.github.io/atom.xml" rel="self"/>
   
   <link href="https://h4ckf0rfun.github.io/"/>
-  <updated>2023-02-10T07:52:27.787Z</updated>
+  <updated>2023-02-15T12:12:20.579Z</updated>
   <id>https://h4ckf0rfun.github.io/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>AVLTree</title>
+    <link href="https://h4ckf0rfun.github.io/2023/02/15/AVLTree/"/>
+    <id>https://h4ckf0rfun.github.io/2023/02/15/AVLTree/</id>
+    <published>2023-02-15T12:11:03.000Z</published>
+    <updated>2023-02-15T12:12:20.579Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="AVL-Tree"><a href="#AVL-Tree" class="headerlink" title="AVL Tree"></a>AVL Tree</h1><h2 id="概念"><a href="#概念" class="headerlink" title="概念:"></a>概念:</h2><p>满足 “以任意节点为根的一颗子树左右高度差≤1” 这个条件的二叉树叫做平衡二叉树</p><h2 id="AVL-插入操作"><a href="#AVL-插入操作" class="headerlink" title="AVL 插入操作:"></a>AVL 插入操作:</h2><h3 id="在讲述插入操作之前，需要知道这几件事"><a href="#在讲述插入操作之前，需要知道这几件事" class="headerlink" title="在讲述插入操作之前，需要知道这几件事:"></a>在讲述插入操作之前，需要知道这几件事:</h3><ol><li>因为在每次插入节点之后都会调整整颗树为平衡树,所以在插入节点之前一定是一棵平衡树</li><li>平衡破坏时，只需要调整最小失衡子树即可</li><li>最小失衡子树在插入节点之前高度差一定为1，因为新插入的节点才导致高度差变为&gt;1</li><li>在插入的过程中遇到的最后一个高度差为1的节点,以这个节点为根的子树的平衡状态可能会被破坏.</li><li>从被破坏的位置向插入位置的路径中,所有子树高度差都为1,而且是由于插入新节点导致的,在插入之前这条路径上的所有子树高度差一定为0.(因为3)</li><li>倒着看,从插入节点向上查找最小失衡子树的过程中,若遇到一个左右子树高度差为0的节点,那么整棵树仍是平衡状态(高度没变)</li></ol><h2 id="插入操作"><a href="#插入操作" class="headerlink" title="插入操作:"></a>插入操作:</h2><p>记录到最后一个左右子树高度差不为0的节点A，因为只有这棵子树才可能成为最小失衡子树。</p><p>判断左插还是右插.</p><ol><li>插入后仍然平衡，最后一个左右子树高度差不为0 的子树此时高度差变为0</li><li><p>插入后不平衡，从插入位置往上到最后A路径上所有子树高度差此时变为1，(之前是0)</p><ol><li>往A左孩子的左子树插。左孩子的左右子树高度差之前是0，现在变成了1 (右旋操作)</li><li>往A左孩子的右子树插。左孩子的左右子树高度差之前是0，现在变成了1.(先左旋，后右旋)</li><li>往A右孩子的左子树插…..</li><li><p>往A右孩子的右子树插…..</p><p>(只有这四种情况.)</p></li></ol></li></ol><h3 id="a-LL情况"><a href="#a-LL情况" class="headerlink" title="a. LL情况"></a>a. LL情况</h3><p>由于A是最后一个高度差为1的节点，然后在A左孩子的左子树上插入，它只能是这种情况(未插入):</p><p><img src="https://h4ckf0rfun.github.io/2023/02/15/AVLTree/Untitled.png" alt="Untitled"></p><p>B的左右子树高度一定相同. (因为A是最后一个高度差为一的节点) ,在插入之后导致了这颗子树不平衡:</p><p><img src="https://h4ckf0rfun.github.io/2023/02/15/AVLTree/Untitled%201.png" alt="Untitled"></p><p>(其中两个红色任意一个都可以是新插入的节点)</p><p>一次右旋即可调整为平衡树：</p><p><img src="https://h4ckf0rfun.github.io/2023/02/15/AVLTree/Untitled%202.png" alt="Untitled"></p><p>注意观察，在插入之前这个子树的高度是H + 2，此时整颗树是平衡二叉树。</p><p>在插入并重新调整之后，这颗子树的高度仍然是H + 2，所以并不会影响整颗树的平衡状态，此时整棵树仍然是平衡二叉树。</p><h3 id="b-LR情况"><a href="#b-LR情况" class="headerlink" title="b.LR情况"></a>b.LR情况</h3><p>这个就是a情况中往b的右子树上插入，只不过这里我们还需要考虑一下B的右孩子的情况(插入之前):</p><p><img src="https://h4ckf0rfun.github.io/2023/02/15/AVLTree/Untitled%203.png" alt="Untitled"></p><p>还是同样的原因，由于A是最后一个左右子树高度差为1的节点，所以B的左右子树高度相同，C的左右子树高度相同。在插入一个新的节点之后变成了这样:</p><p><img src="https://h4ckf0rfun.github.io/2023/02/15/AVLTree/Untitled%204.png" alt="Untitled"></p><p>(图中新插入的节点为两个红色节点中的任意一个)。此时需要先左旋，转换为1 中的情况:</p><p><img src="https://h4ckf0rfun.github.io/2023/02/15/AVLTree/Untitled%205.png" alt="Untitled"></p><p>接着右旋：</p><p><img src="https://h4ckf0rfun.github.io/2023/02/15/AVLTree/Untitled%206.png" alt="Untitled"></p><p>此时这颗子树就被调整为了平衡二叉树，且它的高度是H+2，与插入之前这颗子树的高度一样。所以在插入之前整棵树是平衡状态，在插入并且调整之后整棵树仍然是平衡状态。</p><h3 id="RL与RR情况与上面两种情况类似，这里就不详细说明了。"><a href="#RL与RR情况与上面两种情况类似，这里就不详细说明了。" class="headerlink" title="RL与RR情况与上面两种情况类似，这里就不详细说明了。"></a>RL与RR情况与上面两种情况类似，这里就不详细说明了。</h3><h3 id="为什么只需要调整最小失衡子树就行？"><a href="#为什么只需要调整最小失衡子树就行？" class="headerlink" title="为什么只需要调整最小失衡子树就行？"></a>为什么只需要调整最小失衡子树就行？</h3><p>在a,与b两种情况中应该容易看出，我们调整的都是最小的那颗失去平衡的树。在插入之前与调整之后这颗子树的高度不变，不会影响整颗树的平衡状态。</p><h2 id="删除操作"><a href="#删除操作" class="headerlink" title="删除操作:"></a>删除操作:</h2><p>如果要删除的节点不是叶子节点，我们找一个叶子节点与要删除的节点交换位置。</p><p>现在我们只需要考虑删除叶子节点即可。</p><p>删除叶子节点可能会导致某一棵子树平衡状态破坏，注意如果某棵子树的平衡状态破坏，那么调整之后，这颗子树的高度会减1，那么之后还可能会破坏其他子树的平衡状态。所以需要调整以 ”从叶子到根路径上所有节点为根“ 的子树的平衡状态。但是即使破坏了平衡状态，高度差最大不会超过2。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;AVL-Tree&quot;&gt;&lt;a href=&quot;#AVL-Tree&quot; class=&quot;headerlink&quot; title=&quot;AVL Tree&quot;&gt;&lt;/a&gt;AVL Tree&lt;/h1&gt;&lt;h2 id=&quot;概念&quot;&gt;&lt;a href=&quot;#概念&quot; class=&quot;headerlink&quot; titl</summary>
+      
+    
+    
+    
+    <category term="数据结构" scheme="https://h4ckf0rfun.github.io/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>cdecl调用约定和动态参数个数的实现</title>
@@ -439,28 +461,6 @@
     
     
     <category term="algorithm" scheme="https://h4ckf0rfun.github.io/categories/algorithm/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>windows 异常(0) - 总览</title>
-    <link href="https://h4ckf0rfun.github.io/2022/10/07/windows%E5%BC%82%E5%B8%B8-0/"/>
-    <id>https://h4ckf0rfun.github.io/2022/10/07/windows%E5%BC%82%E5%B8%B8-0/</id>
-    <published>2022-10-07T15:35:22.000Z</published>
-    <updated>2022-10-07T15:36:48.632Z</updated>
-    
-    <content type="html"><![CDATA[<p><img src="https://h4ckf0rfun.github.io/2022/10/07/windows%E5%BC%82%E5%B8%B8-0/%25E6%2597%25A0%25E6%25A0%2587%25E9%25A2%2598.png" alt="无标题.png"></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;&lt;img src=&quot;https://h4ckf0rfun.github.io/2022/10/07/windows%E5%BC%82%E5%B8%B8-0/%25E6%2597%25A0%25E6%25A0%2587%25E9%25A2%2598.png&quot; alt=&quot;无标题</summary>
-      
-    
-    
-    
-    <category term="逆向" scheme="https://h4ckf0rfun.github.io/categories/%E9%80%86%E5%90%91/"/>
     
     
   </entry>
