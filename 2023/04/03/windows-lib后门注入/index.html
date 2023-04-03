@@ -1,0 +1,267 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>windows lib后门注入 | emmm's blog</title><meta name="author" content="emmm"><meta name="copyright" content="emmm"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="，第一种就是普通的静态库，第二种是作为dll的导入库。 接下来我来分享一下如何在这两种lib文件中注入后门代码，使程序编译后生成的exe在运行时候自动 执行我们后门，并且不影响正常lib的功能。 1. 注入原理首先大致说一下lib的文件格式，用压缩文件可以打开lib文件，里面可以看到许多的obj文件(几个cpp就有几个obj)。  lib实际上就是一堆Obj文件打包在了一起，当然还有一些额外的信息">
+<meta property="og:type" content="article">
+<meta property="og:title" content="windows lib后门注入">
+<meta property="og:url" content="https://h4ckf0rfun.github.io/2023/04/03/windows-lib%E5%90%8E%E9%97%A8%E6%B3%A8%E5%85%A5/index.html">
+<meta property="og:site_name" content="emmm&#39;s blog">
+<meta property="og:description" content="，第一种就是普通的静态库，第二种是作为dll的导入库。 接下来我来分享一下如何在这两种lib文件中注入后门代码，使程序编译后生成的exe在运行时候自动 执行我们后门，并且不影响正常lib的功能。 1. 注入原理首先大致说一下lib的文件格式，用压缩文件可以打开lib文件，里面可以看到许多的obj文件(几个cpp就有几个obj)。  lib实际上就是一堆Obj文件打包在了一起，当然还有一些额外的信息">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://h4ckf0rfun.github.io/img/bg.jpg">
+<meta property="article:published_time" content="2023-04-03T11:07:38.000Z">
+<meta property="article:modified_time" content="2023-04-03T11:08:33.745Z">
+<meta property="article:author" content="emmm">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://h4ckf0rfun.github.io/img/bg.jpg"><link rel="shortcut icon" href="/img/favicon.jpg"><link rel="canonical" href="https://h4ckf0rfun.github.io/2023/04/03/windows-lib%E5%90%8E%E9%97%A8%E6%B3%A8%E5%85%A5/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'windows lib后门注入',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-04-03 19:08:33'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="emmm's blog" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/favicon.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">40</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">2</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">13</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/bg.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">emmm's blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">windows lib后门注入</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2023-04-03T11:07:38.000Z" title="Created 2023-04-03 19:07:38">2023-04-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2023-04-03T11:08:33.745Z" title="Updated 2023-04-03 19:08:33">2023-04-03</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%80%86%E5%90%91/">逆向</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="windows lib后门注入"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>，第一种就是普通的静态库，第二种是作为dll的导入库。</p>
+<p>接下来我来分享一下如何在这两种lib文件中注入后门代码，使程序编译后生成的exe在运行时候自动</p>
+<p>执行我们后门，并且不影响正常lib的功能。</p>
+<h1 id="1-注入原理"><a href="#1-注入原理" class="headerlink" title="1. 注入原理"></a>1. 注入原理</h1><p>首先大致说一下lib的文件格式，用压缩文件可以打开lib文件，里面可以看到许多的obj文件(几个cpp就有几个obj)。</p>
+<p><img src="https://h4ckf0rfun.github.io/2023/04/03/windows-lib%E5%90%8E%E9%97%A8%E6%B3%A8%E5%85%A5/Untitled.png" alt="Untitled"></p>
+<p>lib实际上就是一堆Obj文件打包在了一起，当然还有一些额外的信息，这个之后再说。</p>
+<p><img src="https://h4ckf0rfun.github.io/2023/04/03/windows-lib%E5%90%8E%E9%97%A8%E6%B3%A8%E5%85%A5/Untitled%201.png" alt="Untitled"></p>
+<p>只要我们把我们的后门程序backdoor.lib 和 正常的lib合并到一起，这样我们的后门代码就有机会被执行。</p>
+<p>但是这样做还有几个问题</p>
+<h2 id="1-包含后门代码的Obj文件在生成exe的过程中会被链接吗？"><a href="#1-包含后门代码的Obj文件在生成exe的过程中会被链接吗？" class="headerlink" title="1. 包含后门代码的Obj文件在生成exe的过程中会被链接吗？"></a>1. 包含后门代码的Obj文件在生成exe的过程中会被链接吗？</h2><p>如果obj中有符号被引用的话，这个obj才会被链接。否则不会。</p>
+<h2 id="2-如果obj被链接进去-，怎么做才能使程序启动时自动执行我们的代码。"><a href="#2-如果obj被链接进去-，怎么做才能使程序启动时自动执行我们的代码。" class="headerlink" title="2. 如果obj被链接进去 ，怎么做才能使程序启动时自动执行我们的代码。"></a>2. 如果obj被链接进去 ，怎么做才能使程序启动时自动执行我们的代码。</h2><p>在我们的后门代码中写一个全局对象，利用全局对象的构造函数，使它在main等函数之前自动执行。</p>
+<h1 id="2-实现"><a href="#2-实现" class="headerlink" title="2.实现"></a>2.实现</h1><p>现在我们要解决的问题是，想办法使程序链接我们的后门代码的obj。</p>
+<p>首先来了解一下obj文件格式</p>
+<p><img src="https://h4ckf0rfun.github.io/2023/04/03/windows-lib%E5%90%8E%E9%97%A8%E6%B3%A8%E5%85%A5/Untitled%202.png" alt="Untitled"></p>
+<p>这里我们只分析这种的coff格式，在研究的过程中还发现了另一种 Microsoft CLI ByteCode 的obj文件，我们这里不讨论。(vs编译时候选择链接时生成代码，最后生成的lib文件中包含的obj就是这种)</p>
+<p>COFF格式总览:</p>
+<p><img src="https://h4ckf0rfun.github.io/2023/04/03/windows-lib%E5%90%8E%E9%97%A8%E6%B3%A8%E5%85%A5/Untitled%203.png" alt="Untitled"></p>
+<p>这个相比于PE格式还是简单了很多。我们可以使用CoffViewer这个工具来查看obj文件:</p>
+<p><img src="https://h4ckf0rfun.github.io/2023/04/03/windows-lib%E5%90%8E%E9%97%A8%E6%B3%A8%E5%85%A5/Untitled%204.png" alt="Untitled"></p>
+<p>我们可以在原本的lib文件中的每一个obj文件中加入一段代码，在这段代码中引用后门代码中的函数。这样程序在编译的时候，在处理正常的obj文件时发现引用了一个外部符号，最终在包含后门代码的obj文件中找到了，这样这个obj就会被链接进程序。</p>
+<p>虽然obj文件格式不算复杂，但是相比于上面这种方法还有一种更简单的方法，就是直接在SymbolTable 里面加入一个外部符号即可，(这个外部符号的定义需要在我们的后门代码中)。</p>
+<p>笔者在实验的过程中发现，只要添加一个外部符号，不论有没有使用到这个符号，都无法通过编译。</p>
+<p>所以我们现在的目标就是在符号表里面添加一项。</p>
+<p>相关的数据结构:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">FILEHEADER</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">short</span> machine;     <span class="comment">// 平台名</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">short</span> numberOfSections;<span class="comment">// 区段数</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span>  timeDateStamp;   <span class="comment">// 时间戳</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span>  pointerToSymbolTable;		<span class="comment">// 符号表文件偏移</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span>  numberOfSymbols;				<span class="comment">// 符号总个数</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">short</span> sizeOfOptionalHeader;		<span class="comment">// 可选头长度</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">short</span> characteristics;				<span class="comment">// 文件标记</span></span><br><span class="line"></span><br><span class="line">&#125; FILEHEADER, *PFILEHEADER;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">最大为8个字节的,以’\0’为结尾的ASCII字符串.用于记录区段的名字</span></span><br><span class="line"><span class="comment">.区段的名字有些是特定意义的区段. 如果区段名的数量大于8个字节,</span></span><br><span class="line"><span class="comment">则name的第一字节是一个斜杠字符:’/’,接着就是一个数字,</span></span><br><span class="line"><span class="comment">这个数字就是字符串表的一个索引.它将索引到一个具体的区段名.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span>  _<span class="title">SECTIONHEADER</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	<span class="type">char</span> name[<span class="number">8</span>];							<span class="comment">// 段名</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span>  virtualSize;			     <span class="comment">// 虚拟大小  没有用</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span>  virtualAddress;		     <span class="comment">// 虚拟地址 没有用</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span>  sizeOfRawData;			 <span class="comment">// 区段数据的字节数</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span>  pointerToRawData;		 <span class="comment">// 区段数据偏移</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span>  pointerToRelocations;     <span class="comment">// 区段重定位表偏移</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span>  pointerToLinenumbers;     <span class="comment">// 行号表偏移</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">short</span>  numberOfRelocations;     <span class="comment">// 重定位表个数</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">short</span>  numberOfLinenumbers;     <span class="comment">// 行号表个数</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span>  characteristics;          <span class="comment">// 段标识</span></span><br><span class="line">&#125;SECTIONHEADER, *PSECTIONHEADER;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> pack(push, 2)</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">SYMBOL</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	<span class="class"><span class="keyword">union</span> &#123;</span></span><br><span class="line">		<span class="type">char</span> name[<span class="number">8</span>];               <span class="comment">// 符号名称</span></span><br><span class="line">		<span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">			<span class="type">unsigned</span> <span class="type">long</span> zero;     <span class="comment">// 字符串表标识</span></span><br><span class="line">			<span class="type">unsigned</span> <span class="type">long</span> offset;  <span class="comment">// 字符串偏移</span></span><br><span class="line">		&#125;;</span><br><span class="line">	&#125;;</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span> value;            <span class="comment">// 符号值</span></span><br><span class="line">	<span class="type">short</span>          section;          <span class="comment">// 符号所在段</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">short</span> type;            <span class="comment">// 符号类型</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">char</span> Class;            <span class="comment">// 符号存储类型</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">char</span> numberOfAuxSymbols;<span class="comment">// 符号附加记录数</span></span><br><span class="line">&#125; SYMBOL, *PSYMBOL;</span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> pack(pop)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">STRIGTABLE</span>&#123;</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">int</span> Size;</span><br><span class="line">	<span class="type">char</span>         Data[<span class="number">1</span>];</span><br><span class="line">&#125; STRIGTABLE, *PSTRIGTABLE;</span><br></pre></td></tr></table></figure>
+<p>我们可以通过FileHeader找到符号表的位置，然后在符号表的后面 与 字符串表之前再插入一项。</p>
+<p>注意:</p>
+<ol>
+<li>FileHeader里面的NumberOfSymbols 包含了numberOfAuxSymbols.</li>
+<li>字符串表 = FileHeader→numberOfSymbols * sizeof(SYMBOL) + FileHeader→pointerToSymbolTable</li>
+<li>一个auxSymbol和SYMBOL大小相同，都是18个字节。</li>
+</ol>
+<p>先从原本的lib中提取出obj文件，然后在修改了obj之后，重新打包为lib (利用lib程序)。这时候编译就无法通过了，会提示链接时找不到符号。这时候把包含后门代码的obj也打包到这个lib里面，就能通过编译了，而且包含后门的obj文件也会被链接进去。</p>
+<h1 id="3-DLL导入库注入后门代码"><a href="#3-DLL导入库注入后门代码" class="headerlink" title="3. DLL导入库注入后门代码"></a>3. DLL导入库注入后门代码</h1><p>前文提到lib有两种，一种是普通的lib文件，一种是dll的导入库。网上都是这么说的。</p>
+<p>然而在研究的过程中，笔者发现这两种lib根本没有啥区别，只不过dll导入库里面的obj文件不包含代码段。而且dll的导入库里面还包含了一些其他的数据(也是COFF文件，但不是本文提到的Intel 80386 COFF object file)。</p>
+<p>既然里面也包含obj文件，那么上文的方法能否也同样适用于这种lib文件，答案是可以的。</p>
+<p>但是我们无法将该lib文件里面的数据用lib解压出来重新打包，因为lib程序只能打包obj文件。</p>
+<p>有一种办法就是，手动解析lib文件，遍历其成员，如果是intel 80386 COFF Object File，我们就在它的符号表里面加一项。</p>
+<h2 id="lib文件格式分析"><a href="#lib文件格式分析" class="headerlink" title="lib文件格式分析:"></a>lib文件格式分析:</h2><p>lib文件格式还是很简单的，下面笔者带大家分析一下lib的格式</p>
+<h3 id="lib格式总览"><a href="#lib格式总览" class="headerlink" title="lib格式总览"></a>lib格式总览</h3><ol>
+<li>8个字节的magic “!<arch>\n”</arch></li>
+<li><p>后面跟着许多的members</p>
+<ol>
+<li><p>每一个member的开头是一个header:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ar_hdr</span> &#123;</span></span><br><span class="line">	<span class="type">char</span> ar_name[<span class="number">16</span>];</span><br><span class="line">	<span class="type">char</span> ar_date[<span class="number">12</span>];</span><br><span class="line">	<span class="type">char</span> ar_uid[<span class="number">6</span>];</span><br><span class="line">	<span class="type">char</span> ar_gid[<span class="number">6</span>];</span><br><span class="line">	<span class="type">char</span> ar_mode[<span class="number">8</span>];</span><br><span class="line">	<span class="type">char</span> ar_size[<span class="number">10</span>];</span><br><span class="line">	<span class="type">char</span> ar_fmag[<span class="number">2</span>];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>都是字符串形式，但是要注意的是这些字符串未使用的部分不是字节’\x00’，而是空格符。</p>
+<p>其中的ar_size指出和后面跟着的数大小，如果这个数是个奇数，后面的数据对齐到偶数，以’\x0a’ 去补齐。</p>
+<p>b. 之后跟着的就是文件数据</p>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="Member分析"><a href="#Member分析" class="headerlink" title="Member分析:"></a>Member分析:</h3><p>每一个成员开头都有一个这样的header:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ar_hdr</span> &#123;</span></span><br><span class="line">	<span class="type">char</span> ar_name[<span class="number">16</span>];</span><br><span class="line">	<span class="type">char</span> ar_date[<span class="number">12</span>];</span><br><span class="line">	<span class="type">char</span> ar_uid[<span class="number">6</span>];</span><br><span class="line">	<span class="type">char</span> ar_gid[<span class="number">6</span>];</span><br><span class="line">	<span class="type">char</span> ar_mode[<span class="number">8</span>];</span><br><span class="line">	<span class="type">char</span> ar_size[<span class="number">10</span>];</span><br><span class="line">	<span class="type">char</span> ar_fmag[<span class="number">2</span>];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>ar_name以字符’/’ 开头，接着跟着是文件的名称。</p>
+<p>如果ar_name 为’//’ 的话，这意味着这是一个目录信息，它后面的数据信息中包含了该目录下所有的文件的名称 。(它的数据区是一个字符串表) </p>
+<p><img src="https://h4ckf0rfun.github.io/2023/04/03/windows-lib%E5%90%8E%E9%97%A8%E6%B3%A8%E5%85%A5/Untitled%205.png" alt="Untitled"></p>
+<p>假设数据区包含了N条路径信息。 那么之后的N个Members是具体的文件，并且每一个Member的name都是’/’ + 文件名称在字符串表中的偏移</p>
+<p><img src="https://h4ckf0rfun.github.io/2023/04/03/windows-lib%E5%90%8E%E9%97%A8%E6%B3%A8%E5%85%A5/Untitled%206.png" alt="Untitled"></p>
+<p>大部分的Member都是用来描述lib内包含的obj文件，但是lib的前两个Member是比较特殊的。经过对比多个lib文件后，笔者终于猜测出前两个Member数据区的格式:</p>
+<p>第一个Member:</p>
+<ol>
+<li>ar_name 为 ‘/’</li>
+<li>数据区的格式:</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DWORD NumberOfSymbols;  <span class="comment">//该lib文件中的符号个数</span></span><br><span class="line">DWORD ObjOffset;        <span class="comment">//每个符号所在的obj 在lib文件中的偏移 </span></span><br><span class="line">                        <span class="comment">//(注意是obj文件在lib中的偏移,Member的偏移)</span></span><br><span class="line"><span class="comment">//注意上面这些数据都是按大端方式存储</span></span><br></pre></td></tr></table></figure>
+<ol>
+<li>字符串表，包含NumberOfSymbols个字符串。</li>
+</ol>
+<p>第二个Member: </p>
+<ol>
+<li>ar_name为 ‘/’</li>
+<li>数据区的格式:</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DWORD NumberOfObjs;                      <span class="comment">//lib文件中包含的coff</span></span><br><span class="line">DWORD OffsetOfObjs[NumberOfObjs];        <span class="comment">//每一个coff文件在lib文件中的偏移</span></span><br><span class="line">DWORD NumberOfSymbols;                   <span class="comment">//符号个数</span></span><br><span class="line">WORD  index[NumberOfSymbols];            <span class="comment">//每一个符号位于第几个obj里面,从1开始</span></span><br></pre></td></tr></table></figure>
+<ol>
+<li>字符串表，包含NumberOfSymbols个字符串。</li>
+</ol>
+<p>好了，在知道了lib文件格式之后，我们可以随便修改里面的包含的obj文件了。在修改了lib之后，再利用lib程序将正常的lib和包含后门代码的静态库链接到一起就可以了。</p>
+<p>这里就不详细说明具体做法了。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>前文dll导入库的注入方法中是通过手动修改lib文件，这种方法也是适用于一般的lib导入库的。</p>
+<p>在手动修改lib文件之后，然后利用lib程序将正常的lib文件 与我们的后门程序打包到一起。这样就成功的将后门注入到lib中了。</p>
+<p>笔者在实验过程中还发现了一些问题:</p>
+<ol>
+<li><p>c++代码有二进制兼容性问题，不同版本的编译器生成的lib文件无法使用。如果我们的后门程序是C++实现的话，如果用户在编译时候使用了被注入后门的lib文件， 这会导致用户在编译时候无法正常通过。所以我们的后门程序最好是用c语言去实现。</p>
+</li>
+<li><p>如果是使用c语言的话，现在又出现了一个问题，如何在mian之前执行我们的后门代码？在gcc里面是有arrtibute属性的，但是msvc里面恐怕不行。这里笔者提供两种方法 (来源于网络):</p>
+<ol>
+<li><p>C语言</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">pragma</span> data_seg(<span class="string">&quot;.CRT$XIU&quot;</span>)     </span></span><br><span class="line"><span class="type">void</span> * _ctor_ = func;</span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> data_seg()</span></span><br></pre></td></tr></table></figure>
+<p>b. C++</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">pragma</span> data_seg(<span class="string">&quot;.CRT$XCU&quot;</span>)     </span></span><br><span class="line"><span class="type">void</span> * _ctor_ = func;</span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> data_seg()</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+</ol>
+<p>注意如果是C语言的话,func格式返回0代表成功，非0代表失败，这回导致程序退出。</p>
+<h1 id="效果展示"><a href="#效果展示" class="headerlink" title="效果展示:"></a>效果展示:</h1><p>dll文件:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> __declspec(dllexport)</span><br><span class="line"><span class="type">void</span> <span class="title function_">add</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b)</span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;Hello World\n&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译之后生成两个文件: TestDll.dll和TestDll.lib</p>
+<p>用压缩软件看一下 TestDll.lib</p>
+<p><img src="https://h4ckf0rfun.github.io/2023/04/03/windows-lib%E5%90%8E%E9%97%A8%E6%B3%A8%E5%85%A5/Untitled%207.png" alt="Untitled"></p>
+<p>实际上有四个文件，里面的txt是前文提到的前两个Member</p>
+<p>我们使用CoffViewer查看一下第一个TestDll.dll文件</p>
+<p><img src="https://h4ckf0rfun.github.io/2023/04/03/windows-lib%E5%90%8E%E9%97%A8%E6%B3%A8%E5%85%A5/Untitled%208.png" alt="Untitled"></p>
+<p>(可以思考一下为什么符号表是这些东西)</p>
+<p>接着修改这个TestDll.lib，可以看到，写进去三个外部符号</p>
+<p><img src="https://h4ckf0rfun.github.io/2023/04/03/windows-lib%E5%90%8E%E9%97%A8%E6%B3%A8%E5%85%A5/Untitled%209.png" alt="Untitled"></p>
+<p>看一下TestDll2.lib:</p>
+<p><img src="https://h4ckf0rfun.github.io/2023/04/03/windows-lib%E5%90%8E%E9%97%A8%E6%B3%A8%E5%85%A5/Untitled%2010.png" alt="Untitled"></p>
+<p>看起来是没啥区别的，提取出第一个TestDll.dll来看一下:</p>
+<p><img src="https://h4ckf0rfun.github.io/2023/04/03/windows-lib%E5%90%8E%E9%97%A8%E6%B3%A8%E5%85%A5/Untitled%2011.png" alt="Untitled"></p>
+<p>这时候已经多了一个符号了。</p>
+<p>vs编译一下看看效果:</p>
+<p><img src="https://h4ckf0rfun.github.io/2023/04/03/windows-lib%E5%90%8E%E9%97%A8%E6%B3%A8%E5%85%A5/Untitled%2012.png" alt="Untitled"></p>
+<p>现在当然不会通过编译，因为这个符号是定义在我们的后门代码里面的。</p>
+<p>利用lib程序把后门和正常的lib文件打包到一起:</p>
+<p><img src="https://h4ckf0rfun.github.io/2023/04/03/windows-lib%E5%90%8E%E9%97%A8%E6%B3%A8%E5%85%A5/Untitled%2013.png" alt="Untitled"></p>
+<p>重新编译运行，可以看到后门程序上线:</p>
+<p><img src="https://h4ckf0rfun.github.io/2023/04/03/windows-lib%E5%90%8E%E9%97%A8%E6%B3%A8%E5%85%A5/Untitled%2014.png" alt="Untitled"></p>
+<p>参考博客：</p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/weikanzong/p/5622899.html">COFF文件格式 - 拖鞋搭袜 - 博客园 (cnblogs.com)</a></p>
+</article><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/img/bg.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/02/15/AVLTree/"><img class="next-cover" src="/img/bg.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">AVLTree</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/favicon.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">emmm</div><div class="author-info__description">沉下去</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">40</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">2</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">13</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/H4ckF0rFun"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">1. 注入原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%8C%85%E5%90%AB%E5%90%8E%E9%97%A8%E4%BB%A3%E7%A0%81%E7%9A%84Obj%E6%96%87%E4%BB%B6%E5%9C%A8%E7%94%9F%E6%88%90exe%E7%9A%84%E8%BF%87%E7%A8%8B%E4%B8%AD%E4%BC%9A%E8%A2%AB%E9%93%BE%E6%8E%A5%E5%90%97%EF%BC%9F"><span class="toc-number">1.1.</span> <span class="toc-text">1. 包含后门代码的Obj文件在生成exe的过程中会被链接吗？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%A6%82%E6%9E%9Cobj%E8%A2%AB%E9%93%BE%E6%8E%A5%E8%BF%9B%E5%8E%BB-%EF%BC%8C%E6%80%8E%E4%B9%88%E5%81%9A%E6%89%8D%E8%83%BD%E4%BD%BF%E7%A8%8B%E5%BA%8F%E5%90%AF%E5%8A%A8%E6%97%B6%E8%87%AA%E5%8A%A8%E6%89%A7%E8%A1%8C%E6%88%91%E4%BB%AC%E7%9A%84%E4%BB%A3%E7%A0%81%E3%80%82"><span class="toc-number">1.2.</span> <span class="toc-text">2. 如果obj被链接进去 ，怎么做才能使程序启动时自动执行我们的代码。</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.</span> <span class="toc-text">2.实现</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-DLL%E5%AF%BC%E5%85%A5%E5%BA%93%E6%B3%A8%E5%85%A5%E5%90%8E%E9%97%A8%E4%BB%A3%E7%A0%81"><span class="toc-number">3.</span> <span class="toc-text">3. DLL导入库注入后门代码</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#lib%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E5%88%86%E6%9E%90"><span class="toc-number">3.1.</span> <span class="toc-text">lib文件格式分析:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#lib%E6%A0%BC%E5%BC%8F%E6%80%BB%E8%A7%88"><span class="toc-number">3.1.1.</span> <span class="toc-text">lib格式总览</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Member%E5%88%86%E6%9E%90"><span class="toc-number">3.1.2.</span> <span class="toc-text">Member分析:</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%88%E6%9E%9C%E5%B1%95%E7%A4%BA"><span class="toc-number">5.</span> <span class="toc-text">效果展示:</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/03/windows-lib%E5%90%8E%E9%97%A8%E6%B3%A8%E5%85%A5/" title="windows lib后门注入">windows lib后门注入</a><time datetime="2023-04-03T11:07:38.000Z" title="Created 2023-04-03 19:07:38">2023-04-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/02/15/AVLTree/" title="AVLTree">AVLTree</a><time datetime="2023-02-15T12:11:03.000Z" title="Created 2023-02-15 20:11:03">2023-02-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/02/10/cdecl%E8%B0%83%E7%94%A8%E7%BA%A6%E5%AE%9A%E5%92%8C%E5%8A%A8%E6%80%81%E5%8F%82%E6%95%B0%E4%B8%AA%E6%95%B0%E7%9A%84%E5%AE%9E%E7%8E%B0/" title="cdecl调用约定和动态参数个数的实现">cdecl调用约定和动态参数个数的实现</a><time datetime="2023-02-10T07:50:55.000Z" title="Created 2023-02-10 15:50:55">2023-02-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/02/10/WindowsPE%E6%A0%BC%E5%BC%8F/" title="WindowsPE格式">WindowsPE格式</a><time datetime="2023-02-10T07:50:01.000Z" title="Created 2023-02-10 15:50:01">2023-02-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/02/05/Rabin%E5%8A%A0%E5%AF%86/" title="Rabin加密">Rabin加密</a><time datetime="2023-02-05T09:38:30.000Z" title="Created 2023-02-05 17:38:30">2023-02-05</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/img/bg.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2023 By emmm</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">不要停止学习</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
